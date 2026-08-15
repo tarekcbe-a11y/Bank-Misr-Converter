@@ -124,33 +124,11 @@
             color: #f8fafc;
         }
 
-        .result-box {
-            background: #1f2937;
-            padding: 12px;
-            border-radius: 10px;
-            text-align: center;
-            border: 1px dashed #d4af37;
-            margin-top: 15px;
-        }
-
-        .result-label {
-            font-size: 12px;
-            color: #94a3b8;
-            display: block;
-            margin-bottom: 4px;
-        }
-
-        #result {
-            font-size: 18px;
-            font-weight: bold;
-            color: #d4af37;
-        }
-
         .update-info {
             text-align: center;
             font-size: 10px;
             color: #64748b;
-            margin-top: 10px;
+            margin-top: 15px;
         }
 
         .footer-divider {
@@ -181,21 +159,11 @@
         <span class="group-title">جروب عملاء البنوك المصرية 🛡️</span>
     </div>
 
-    <h3>💱 حاسبة تحويل العملات اللحظية</h3>
+    <h3>💱 أسعار العملات اللحظية</h3>
     
     <div class="input-group">
-        <label>المبلغ:</label>
-        <input type="number" id="amount" value="1" oninput="convertCurrency()">
-    </div>
-
-    <div class="input-group">
-        <label>من عملة:</label>
-        <select id="fromCurrency" onchange="convertCurrency()"></select>
-    </div>
-
-    <div class="input-group">
-        <label>إلى عملة:</label>
-        <select id="toCurrency" onchange="convertCurrency()"></select>
+        <label>اختر العملة للمتابعة:</label>
+        <select id="fromCurrency" onchange="updateRates()"></select>
     </div>
 
     <div class="rates-grid">
@@ -208,11 +176,6 @@
             <span id="buyRate" class="rate-value">--</span>
         </div>
     </div>
-
-    <div class="result-box">
-        <span class="result-label">القيمة الناتجة:</span>
-        <span id="result">0.00 EGP</span>
-    </div>
     
     <div class="update-info" id="updateTime">
         جاري تحميل التحديثات...
@@ -224,11 +187,10 @@
     <div class="footer-developer">Developed by Tarek Metwally</div>
 </div>
 
-<!-- استدعاء ملف العملات الخارجي مع رقم إصدار لمنع التخزين المؤقت -->
+<!-- استدعاء ملف العملات الخارجي -->
 <script src="rates.js?v=20260816"></script>
 <script>
     function initConverter() {
-        // التأكد من تحميل ملف rates.js بنجاح
         if (typeof window.currencyData === 'undefined' || !window.currencyData.rates) {
             setTimeout(initConverter, 50);
             return;
@@ -236,49 +198,32 @@
 
         const rates = window.currencyData.rates;
         const fromSelect = document.getElementById('fromCurrency');
-        const toSelect = document.getElementById('toCurrency');
 
         fromSelect.innerHTML = '';
-        toSelect.innerHTML = '';
 
-        // تعبئة القوائم المنسدلة تبدأ بالجنيه المصري (EGP) ثم باقي العملات بالعربي والأعلام
         for (let code in rates) {
             let item = rates[code];
             let optionText = `${item.flag} ${item.name} (${code})`;
-            
             fromSelect.add(new Option(optionText, code));
-            toSelect.add(new Option(optionText, code));
         }
 
-        // القيم الافتتاحية المطلوبة
         fromSelect.value = "USD";
-        toSelect.value = "EGP";
-
         document.getElementById('updateTime').innerText = `آخر تحديث: ${window.currencyData.updateDate} - مرجع بنك مصر`;
-        convertCurrency();
+        updateRates();
     }
 
-    function convertCurrency() {
+    function updateRates() {
         if (typeof window.currencyData === 'undefined' || !window.currencyData.rates) return;
 
-        const amount = parseFloat(document.getElementById('amount').value) || 0;
-        const from = document.getElementById('fromCurrency').value;
-        const to = document.getElementById('toCurrency').value;
+        const selectedCode = document.getElementById('fromCurrency').value;
         const rates = window.currencyData.rates;
 
-        if (!rates[from] || !rates[to]) return;
+        if (!rates[selectedCode]) return;
 
-        const amountInEGP = amount * rates[from].sell;
-        const finalResult = amountInEGP / rates[to].sell;
-
-        document.getElementById('result').innerText = 
-            finalResult.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + to;
-
-        document.getElementById('sellRate').innerText = rates[from].sell.toFixed(2);
-        document.getElementById('buyRate').innerText = rates[from].buy.toFixed(2);
+        document.getElementById('sellRate').innerText = rates[selectedCode].sell.toFixed(2) + " جنيه";
+        document.getElementById('buyRate').innerText = rates[selectedCode].buy.toFixed(2) + " جنيه";
     }
 
-    // التشغيل المباشر عند اكتمال تحميل عناصر الصفحة وملف البيانات
     window.addEventListener('DOMContentLoaded', initConverter);
 </script>
 
