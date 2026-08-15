@@ -3,78 +3,260 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>حاسبة تحويل العملات - جروب عملاء البنوك المصرية</title>
+    <title>حاسبة تحويل العملات المتقدمة - جروب عملاء البنوك المصرية</title>
+    <!-- استدعاء ملف البيانات الخارجي -->
+    <script src="rates.js"></script>
     <style>
-        body { background-color: #0b0f19; font-family: Tahoma, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; direction: rtl; text-align: right; }
-        .converter-card { background-color: #111827; color: #f3f4f6; padding: 20px; border-radius: 12px; border: 1px solid #d4af37; width: 100%; max-width: 340px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); box-sizing: border-box; }
-        .header-branding { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(212, 175, 55, 0.3); }
-        .logo-img { width: 30px; height: 30px; object-fit: contain; }
-        .group-title { color: #ffffff; font-size: 13px; font-weight: bold; }
-        .converter-card h3 { color: #d4af37; text-align: center; margin-bottom: 15px; font-size: 16px; }
-        .input-group { margin-bottom: 12px; }
-        .input-group label { display: block; margin-bottom: 4px; font-size: 13px; color: #d1d5db; }
-        .input-group input, .input-group select { width: 100%; padding: 8px 10px; background: #1f2937; border: 1px solid #374151; color: #fff; border-radius: 6px; box-sizing: border-box; font-size: 13px; }
-        .result-box { background: #1f2937; padding: 12px; border-radius: 8px; text-align: center; border: 1px dashed #d4af37; margin-top: 15px; }
-        #result { font-size: 18px; font-weight: bold; color: #d4af37; }
-        .update-info { text-align: center; font-size: 10px; color: #9ca3af; margin-top: 10px; }
-        .footer-branding { text-align: center; margin-top: 10px; color: #d4af37; font-size: 12px; }
+        body {
+            background-color: #0b0f19;
+            font-family: Tahoma, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            direction: rtl;
+            text-align: right;
+        }
+
+        .converter-card {
+            background-color: #111827;
+            color: #f3f4f6;
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid #d4af37;
+            width: 100%;
+            max-width: 360px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+            box-sizing: border-box;
+        }
+
+        .header-branding {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .logo-img {
+            width: 26px;
+            height: 26px;
+            object-fit: contain;
+        }
+
+        .group-title {
+            color: #d4af37;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .converter-card h3 {
+            color: #38bdf8;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .input-group {
+            margin-bottom: 12px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 13px;
+            color: #94a3b8;
+        }
+
+        .input-group input, 
+        .input-group select {
+            width: 100%;
+            padding: 10px 12px;
+            background: #1f2937;
+            border: 1px solid #d4af37;
+            color: #fff;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 14px;
+            text-align: right;
+            direction: rtl;
+        }
+
+        .input-group select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d4af37' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: left 12px center;
+            background-size: 16px;
+            padding-left: 35px;
+        }
+
+        .rates-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .rate-box {
+            background: #1f2937;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px dashed #d4af37;
+        }
+
+        .rate-label {
+            font-size: 11px;
+            color: #94a3b8;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .rate-value {
+            font-size: 15px;
+            font-weight: bold;
+            color: #f8fafc;
+        }
+
+        .result-main-box {
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 15px;
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(14, 165, 233, 0.3);
+        }
+
+        .update-info {
+            text-align: center;
+            font-size: 10px;
+            color: #64748b;
+            margin-top: 10px;
+        }
+
+        .footer-divider {
+            border: none;
+            border-top: 1px solid rgba(212, 175, 55, 0.3);
+            margin: 15px 0 10px 0;
+        }
+
+        .footer-branding {
+            text-align: center;
+            color: #d4af37;
+            font-size: 12px;
+        }
+
+        .footer-developer {
+            color: #38bdf8;
+            font-size: 11px;
+            margin-top: 2px;
+        }
     </style>
 </head>
 <body>
+
 <div class="converter-card">
     <div class="header-branding">
         <img src="logo.png" alt="Logo" class="logo-img">
         <span class="group-title">جروب عملاء البنوك المصرية 🛡️</span>
     </div>
-    <h3>💱 حاسبة تحويل العملات اللحظية</h3>
-    <div class="input-group">
-        <label>المبلغ:</label>
-        <input type="number" id="amount" value="1" oninput="convertCurrency()">
-    </div>
-    <div class="input-group">
-        <label>من عملة:</label>
-        <select id="fromCurrency" onchange="convertCurrency()"></select>
-    </div>
-    <div class="input-group">
-        <label>إلى عملة:</label>
-        <select id="toCurrency" onchange="convertCurrency()"></select>
-    </div>
-    <div class="result-box"><span id="result">0.00 EGP</span></div>
-    <div class="update-info">آخر تحديث: 16 أغسطس 2026 - مرجع بنك مصر</div>
-    <div class="footer-branding">جروب عملاء البنوك المصرية 🛡️<br>Developed by Tarek Metwally</div>
-</div>
-<script>
-    const rates = {
-        USD: 50.28,
-        EUR: 58.00,
-        GBP: 67.82,
-        SAR: 13.375,
-        AED: 13.683,
-        KWD: 163.75,
-        QAR: 13.78,
-        BHD: 133.35,
-        OMR: 130.65,
-        JOD: 70.85,
-        CHF: 61.77,
-        CAD: 36.11,
-        AUD: 33.50,
-        JPY: 0.33,
-        EGP: 1.00
-    };
 
-    function convertCurrency() {
+    <h3>حاسبة تحويل العملات المتقدمة</h3>
+    
+    <div class="input-group">
+        <label>المبلغ</label>
+        <input type="number" id="amount" value="1" oninput="calculate()">
+    </div>
+
+    <div class="input-group">
+        <label>من عملة</label>
+        <select id="fromCurrency" onchange="calculate()"></select>
+    </div>
+
+    <div class="input-group">
+        <label>إلى عملة</label>
+        <select id="toCurrency" onchange="calculate()"></select>
+    </div>
+
+    <div class="rates-grid">
+        <div class="rate-box">
+            <span class="rate-label">📈 سعر البيع</span>
+            <span id="sellRate" class="rate-value">--</span>
+        </div>
+        <div class="rate-box">
+            <span class="rate-label">📉 سعر الشراء</span>
+            <span id="buyRate" class="rate-value">--</span>
+        </div>
+    </div>
+
+    <div class="result-main-box" id="mainResult">
+        0.00 EGP
+    </div>
+    
+    <div class="update-info" id="updateText">
+        أسعار مرجعية محدثة أوتوماتيكياً
+    </div>
+
+    <hr class="footer-divider">
+
+    <div class="footer-branding">جروب عملاء البنوك المصرية 🛡️</div>
+    <div class="footer-developer" style="text-align: center;">Developed by Tarek Metwally</div>
+</div>
+
+<script>
+    function initCalculator() {
+        const data = window.currencyData;
+        const rates = data.rates;
+        
+        const fromSelect = document.getElementById('fromCurrency');
+        const toSelect = document.getElementById('toCurrency');
+
+        fromSelect.innerHTML = '';
+        toSelect.innerHTML = '';
+
+        for (let code in rates) {
+            let item = rates[code];
+            let optionText = `${item.flag} ${item.name} (${code})`;
+            
+            fromSelect.add(new Option(optionText, code));
+            toSelect.add(new Option(optionText, code));
+        }
+
+        // القيم الافتراضية الافتتاحية: من دولار أمريكي إلى جنيه مصري
+        fromSelect.value = "USD";
+        toSelect.value = "EGP";
+
+        document.getElementById('updateText').innerText = `آخر تحديث: ${data.updateDate} - مرجع بنك مصر`;
+        calculate();
+    }
+
+    function calculate() {
         const amount = parseFloat(document.getElementById('amount').value) || 0;
         const from = document.getElementById('fromCurrency').value;
         const to = document.getElementById('toCurrency').value;
-        const val = (amount * rates[from]) / rates[to];
-        document.getElementById('result').innerText = val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + to;
+        const rates = window.currencyData.rates;
+
+        // الحساب بناء على سعر البيع المركزي كمعيار للتحويل
+        const amountInEGP = amount * rates[from].sell;
+        const finalResult = amountInEGP / rates[to].sell;
+
+        document.getElementById('mainResult').innerText = 
+            finalResult.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + to;
+
+        // عرض تفاصيل البيع والشراء للعملة المحول منها
+        document.getElementById('sellRate').innerText = rates[from].sell.toFixed(2);
+        document.getElementById('buyRate').innerText = rates[from].buy.toFixed(2);
     }
 
-    const selects = [document.getElementById('fromCurrency'), document.getElementById('toCurrency')];
-    Object.keys(rates).forEach(currency => {
-        selects.forEach(sel => sel.add(new Option(currency, currency)));
-    });
-    window.onload = convertCurrency;
+    window.onload = initCalculator;
 </script>
+
 </body>
 </html>
