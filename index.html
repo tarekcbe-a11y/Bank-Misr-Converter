@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>حاسبة تحويل العملات اللحظية - جروب عملاء البنوك المصرية</title>
+    <title>جدول أسعار العملات - جروب عملاء البنوك المصرية</title>
     <style>
         body {
             background-color: #0b0f19;
@@ -16,216 +16,83 @@
             direction: rtl;
             text-align: right;
         }
-
-        .converter-card {
+        .card {
             background-color: #111827;
             color: #f3f4f6;
-            padding: 20px;
+            padding: 15px;
             border-radius: 16px;
             border: 1px solid #d4af37;
             width: 100%;
-            max-width: 350px;
+            max-width: 380px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
             box-sizing: border-box;
         }
-
         .header-branding {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
+            margin-bottom: 10px;
+            padding-bottom: 6px;
             border-bottom: 1px solid rgba(212, 175, 55, 0.3);
         }
-
-        .logo-img {
-            width: 26px;
-            height: 26px;
-            object-fit: contain;
-        }
-
-        .group-title {
-            color: #d4af37;
-            font-size: 13px;
-            font-weight: bold;
-        }
-
-        .converter-card h3 {
-            color: #d4af37;
-            text-align: center;
-            margin-bottom: 15px;
-            font-size: 15px;
-        }
-
-        .input-group {
-            margin-bottom: 12px;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 4px;
-            font-size: 13px;
-            color: #94a3b8;
-        }
-
-        .input-group input, 
-        .input-group select {
-            width: 100%;
-            padding: 10px 12px;
-            background: #1f2937;
-            border: 1px solid #374151;
-            color: #fff;
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-size: 14px;
-            text-align: right;
-            direction: rtl;
-            outline: none;
-        }
-
-        .input-group select:focus,
-        .input-group input:focus {
-            border-color: #d4af37;
-        }
-
-        .input-group select {
-            appearance: auto;
-            -webkit-appearance: menulist;
-            -moz-appearance: menulist;
-            cursor: pointer;
-        }
-
-        .rates-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .rate-box {
-            background: #1f2937;
-            padding: 10px;
-            border-radius: 8px;
-            text-align: center;
-            border: 1px dashed #d4af37;
-        }
-
-        .rate-label {
-            font-size: 11px;
-            color: #94a3b8;
-            display: block;
-            margin-bottom: 4px;
-        }
-
-        .rate-value {
-            font-size: 15px;
-            font-weight: bold;
-            color: #f8fafc;
-        }
-
-        .update-info {
-            text-align: center;
-            font-size: 10px;
-            color: #64748b;
-            margin-top: 15px;
-        }
-
-        .footer-divider {
-            border: none;
-            border-top: 1px solid rgba(212, 175, 55, 0.3);
-            margin: 15px 0 10px 0;
-        }
-
-        .footer-branding {
-            text-align: center;
-            color: #d4af37;
-            font-size: 12px;
-        }
-
-        .footer-developer {
-            color: #d4af37;
-            font-size: 11px;
-            margin-top: 2px;
-            text-align: center;
-        }
+        .logo-img { width: 24px; height: 24px; object-fit: contain; }
+        .group-title { color: #d4af37; font-size: 12px; font-weight: bold; }
+        h3 { color: #d4af37; text-align: center; margin-bottom: 12px; font-size: 14px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+        th, td { padding: 8px 6px; text-align: center; border-bottom: 1px solid #1f2937; }
+        th { color: #d4af37; font-size: 12px; background-color: #1f2937; }
+        td { color: #f8fafc; }
+        .currency-name { text-align: right; }
+        .update-info { text-align: center; font-size: 10px; color: #64748b; margin-top: 12px; }
+        .footer-divider { border: none; border-top: 1px solid rgba(212, 175, 55, 0.3); margin: 12px 0 8px 0; }
+        .footer-branding { text-align: center; color: #d4af37; font-size: 11px; }
+        .footer-developer { color: #d4af37; font-size: 10px; margin-top: 2px; text-align: center; }
     </style>
 </head>
 <body>
 
-<div class="converter-card">
+<div class="card">
     <div class="header-branding">
         <img src="logo.png" alt="Logo" class="logo-img">
         <span class="group-title">جروب عملاء البنوك المصرية 🛡️</span>
     </div>
-
-    <h3>💱 أسعار العملات اللحظية</h3>
-    
-    <div class="input-group">
-        <label>اختر العملة للمتابعة:</label>
-        <select id="fromCurrency" onchange="updateRates()"></select>
-    </div>
-
-    <div class="rates-grid">
-        <div class="rate-box">
-            <span class="rate-label">📈 سعر البيع</span>
-            <span id="sellRate" class="rate-value">--</span>
-        </div>
-        <div class="rate-box">
-            <span class="rate-label">📉 سعر الشراء</span>
-            <span id="buyRate" class="rate-value">--</span>
-        </div>
-    </div>
-    
-    <div class="update-info" id="updateTime">
-        جاري تحميل التحديثات...
-    </div>
-
+    <h3>📊 جدول أسعار العملات اللحظية</h3>
+    <table>
+        <thead>
+            <tr>
+                <th class="currency-name">العملة</th>
+                <th>الشراء</th>
+                <th>البيع</th>
+            </tr>
+        </thead>
+        <tbody id="ratesTableBody"></tbody>
+    </table>
+    <div class="update-info" id="updateTime">آخر تحديث: 16 أغسطس 2026 - مرجع بنك مصر</div>
     <hr class="footer-divider">
-
     <div class="footer-branding">جروب عملاء البنوك المصرية 🛡️</div>
     <div class="footer-developer">Developed by Tarek Metwally</div>
 </div>
 
-<!-- استدعاء ملف العملات الخارجي -->
-<script src="rates.js?v=20260816"></script>
 <script>
-    function initConverter() {
-        if (typeof window.currencyData === 'undefined' || !window.currencyData.rates) {
-            setTimeout(initConverter, 50);
-            return;
+    const ratesData = {
+        updateDate: "16 أغسطس 2026",
+        rates: {
+            EGP: { name: "جنيه مصري", flag: "🇪🇬", buy: 1.00, sell: 1.00 },
+            USD: { name: "دولار أمريكي", flag: "🇺🇸", buy: 50.18, sell: 50.28 },
+            EUR: { name: "يورو", flag: "🇪🇺", buy: 57.85, sell: 58.00 },
+            GBP: { name: "جنيه إسترليني", flag: "🇬🇧", buy: 67.65, sell: 67.82 },
+            SAR: { name: "ريال سعودي", flag: "🇸🇦", buy: 13.34, sell: 13.38 },
+            AED: { name: "درهم إماراتي", flag: "🇦🇪", buy: 13.65, sell: 13.68 },
+            KWD: { name: "دينار كويتي", flag: "🇰🇼", buy: 163.10, sell: 163.75 }
         }
+    };
 
-        const rates = window.currencyData.rates;
-        const fromSelect = document.getElementById('fromCurrency');
-
-        fromSelect.innerHTML = '';
-
-        for (let code in rates) {
-            let item = rates[code];
-            let optionText = `${item.flag} ${item.name} (${code})`;
-            fromSelect.add(new Option(optionText, code));
-        }
-
-        fromSelect.value = "USD";
-        document.getElementById('updateTime').innerText = `آخر تحديث: ${window.currencyData.updateDate} - مرجع بنك مصر`;
-        updateRates();
+    const tbody = document.getElementById('ratesTableBody');
+    for (let code in ratesData.rates) {
+        let item = ratesData.rates[code];
+        tbody.innerHTML += `<tr><td class="currency-name">${item.flag} ${item.name}</td><td>${item.buy.toFixed(2)}</td><td>${item.sell.toFixed(2)}</td></tr>`;
     }
-
-    function updateRates() {
-        if (typeof window.currencyData === 'undefined' || !window.currencyData.rates) return;
-
-        const selectedCode = document.getElementById('fromCurrency').value;
-        const rates = window.currencyData.rates;
-
-        if (!rates[selectedCode]) return;
-
-        document.getElementById('sellRate').innerText = rates[selectedCode].sell.toFixed(2) + " جنيه";
-        document.getElementById('buyRate').innerText = rates[selectedCode].buy.toFixed(2) + " جنيه";
-    }
-
-    window.addEventListener('DOMContentLoaded', initConverter);
 </script>
-
 </body>
 </html>
