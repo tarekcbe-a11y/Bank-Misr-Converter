@@ -227,17 +227,18 @@
 
 <script>
     function initConverter() {
-        const data = window.currencyData;
-        if (!data || !data.rates) return;
-        
-        const rates = data.rates;
+        if (typeof window.currencyData === 'undefined' || !window.currencyData.rates) {
+            setTimeout(initConverter, 100);
+            return;
+        }
+
+        const rates = window.currencyData.rates;
         const fromSelect = document.getElementById('fromCurrency');
         const toSelect = document.getElementById('toCurrency');
 
         fromSelect.innerHTML = '';
         toSelect.innerHTML = '';
 
-        // تعبئة القوائم المنسدلة بالترتيب تبدأ بالجنيه المصري
         for (let code in rates) {
             let item = rates[code];
             let optionText = `${item.flag} ${item.name} (${code})`;
@@ -246,31 +247,29 @@
             toSelect.add(new Option(optionText, code));
         }
 
-        // القيم الافتتاحية: من دولار أمريكي إلى جنيه مصري
         fromSelect.value = "USD";
         toSelect.value = "EGP";
 
-        document.getElementById('updateTime').innerText = `آخر تحديث: ${data.updateDate} - مرجع بنك مصر`;
+        document.getElementById('updateTime').innerText = `آخر تحديث: ${window.currencyData.updateDate} - مرجع بنك مصر`;
         convertCurrency();
     }
 
     function convertCurrency() {
-        const data = window.currencyData;
-        if (!data || !data.rates) return;
+        if (typeof window.currencyData === 'undefined' || !window.currencyData.rates) return;
 
         const amount = parseFloat(document.getElementById('amount').value) || 0;
         const from = document.getElementById('fromCurrency').value;
         const to = document.getElementById('toCurrency').value;
-        const rates = data.rates;
+        const rates = window.currencyData.rates;
 
-        // التحويل يعتمد على سعر البيع كمعيار أساسي
+        if (!rates[from] || !rates[to]) return;
+
         const amountInEGP = amount * rates[from].sell;
         const finalResult = amountInEGP / rates[to].sell;
 
         document.getElementById('result').innerText = 
             finalResult.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + to;
 
-        // عرض تفاصيل البيع والشراء للعملة المحول منها
         document.getElementById('sellRate').innerText = rates[from].sell.toFixed(2);
         document.getElementById('buyRate').innerText = rates[from].buy.toFixed(2);
     }
