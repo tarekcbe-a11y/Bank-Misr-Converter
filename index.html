@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>حاسبة تحويل العملات المتقدمة - جروب عملاء البنوك المصرية</title>
-    <!-- استدعاء ملف البيانات الخارجي -->
+    <title>حاسبة تحويل العملات اللحظية - جروب عملاء البنوك المصرية</title>
     <script src="rates.js"></script>
     <style>
         body {
@@ -26,7 +25,7 @@
             border-radius: 16px;
             border: 1px solid #d4af37;
             width: 100%;
-            max-width: 360px;
+            max-width: 350px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
             box-sizing: border-box;
         }
@@ -54,10 +53,10 @@
         }
 
         .converter-card h3 {
-            color: #38bdf8;
+            color: #d4af37;
             text-align: center;
             margin-bottom: 15px;
-            font-size: 16px;
+            font-size: 15px;
         }
 
         .input-group {
@@ -76,62 +75,48 @@
             width: 100%;
             padding: 10px 12px;
             background: #1f2937;
-            border: 1px solid #d4af37;
+            border: 1px solid #374151;
             color: #fff;
             border-radius: 8px;
             box-sizing: border-box;
             font-size: 14px;
             text-align: right;
             direction: rtl;
+            outline: none;
+        }
+
+        .input-group select:focus,
+        .input-group input:focus {
+            border-color: #d4af37;
         }
 
         .input-group select {
-            appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23d4af37' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: left 12px center;
-            background-size: 16px;
-            padding-left: 35px;
+            appearance: auto;
+            -webkit-appearance: menulist;
+            -moz-appearance: menulist;
+            cursor: pointer;
         }
 
-        .rates-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .rate-box {
+        .result-box {
             background: #1f2937;
-            padding: 10px;
-            border-radius: 8px;
-            text-align: center;
-            border: 1px dashed #d4af37;
-        }
-
-        .rate-label {
-            font-size: 11px;
-            color: #94a3b8;
-            display: block;
-            margin-bottom: 4px;
-        }
-
-        .rate-value {
-            font-size: 15px;
-            font-weight: bold;
-            color: #f8fafc;
-        }
-
-        .result-main-box {
-            background: linear-gradient(135deg, #0ea5e9, #0284c7);
-            padding: 12px;
+            padding: 15px;
             border-radius: 10px;
             text-align: center;
+            border: 1px dashed #d4af37;
             margin-top: 15px;
-            color: #ffffff;
-            font-size: 18px;
+        }
+
+        .result-label {
+            font-size: 12px;
+            color: #94a3b8;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        #result {
+            font-size: 20px;
             font-weight: bold;
-            box-shadow: 0 4px 10px rgba(14, 165, 233, 0.3);
+            color: #d4af37;
         }
 
         .update-info {
@@ -154,9 +139,10 @@
         }
 
         .footer-developer {
-            color: #38bdf8;
+            color: #d4af37;
             font-size: 11px;
             margin-top: 2px;
+            text-align: center;
         }
     </style>
 </head>
@@ -168,50 +154,40 @@
         <span class="group-title">جروب عملاء البنوك المصرية 🛡️</span>
     </div>
 
-    <h3>حاسبة تحويل العملات المتقدمة</h3>
+    <h3>💱 حاسبة تحويل العملات اللحظية</h3>
     
     <div class="input-group">
-        <label>المبلغ</label>
-        <input type="number" id="amount" value="1" oninput="calculate()">
+        <label>المبلغ:</label>
+        <input type="number" id="amount" value="1" oninput="convertCurrency()">
     </div>
 
     <div class="input-group">
-        <label>من عملة</label>
-        <select id="fromCurrency" onchange="calculate()"></select>
+        <label>من عملة:</label>
+        <select id="fromCurrency" onchange="convertCurrency()"></select>
     </div>
 
     <div class="input-group">
-        <label>إلى عملة</label>
-        <select id="toCurrency" onchange="calculate()"></select>
+        <label>إلى عملة:</label>
+        <select id="toCurrency" onchange="convertCurrency()"></select>
     </div>
 
-    <div class="rates-grid">
-        <div class="rate-box">
-            <span class="rate-label">📈 سعر البيع</span>
-            <span id="sellRate" class="rate-value">--</span>
-        </div>
-        <div class="rate-box">
-            <span class="rate-label">📉 سعر الشراء</span>
-            <span id="buyRate" class="rate-value">--</span>
-        </div>
-    </div>
-
-    <div class="result-main-box" id="mainResult">
-        0.00 EGP
+    <div class="result-box">
+        <span class="result-label">القيمة الناتجة:</span>
+        <span id="result">0.00 EGP</span>
     </div>
     
-    <div class="update-info" id="updateText">
-        أسعار مرجعية محدثة أوتوماتيكياً
+    <div class="update-info" id="updateTime">
+        آخر تحديث: 16 أغسطس 2026 - مرجع بنك مصر
     </div>
 
     <hr class="footer-divider">
 
     <div class="footer-branding">جروب عملاء البنوك المصرية 🛡️</div>
-    <div class="footer-developer" style="text-align: center;">Developed by Tarek Metwally</div>
+    <div class="footer-developer">Developed by Tarek Metwally</div>
 </div>
 
 <script>
-    function initCalculator() {
+    function initConverter() {
         const data = window.currencyData;
         const rates = data.rates;
         
@@ -221,6 +197,7 @@
         fromSelect.innerHTML = '';
         toSelect.innerHTML = '';
 
+        // بناء القوائم المنسدلة بالترتيب الموجود في ملف البيانات (يبدأ بالجنيه المصري)
         for (let code in rates) {
             let item = rates[code];
             let optionText = `${item.flag} ${item.name} (${code})`;
@@ -229,33 +206,28 @@
             toSelect.add(new Option(optionText, code));
         }
 
-        // القيم الافتراضية الافتتاحية: من دولار أمريكي إلى جنيه مصري
+        // القيم الافتتاحية المطلوبة عند الفتح: من دولار أمريكي إلى جنيه مصري
         fromSelect.value = "USD";
         toSelect.value = "EGP";
 
-        document.getElementById('updateText').innerText = `آخر تحديث: ${data.updateDate} - مرجع بنك مصر`;
-        calculate();
+        document.getElementById('updateTime').innerText = `آخر تحديث: ${data.updateDate} - مرجع بنك مصر`;
+        convertCurrency();
     }
 
-    function calculate() {
+    function convertCurrency() {
         const amount = parseFloat(document.getElementById('amount').value) || 0;
         const from = document.getElementById('fromCurrency').value;
         const to = document.getElementById('toCurrency').value;
         const rates = window.currencyData.rates;
 
-        // الحساب بناء على سعر البيع المركزي كمعيار للتحويل
-        const amountInEGP = amount * rates[from].sell;
-        const finalResult = amountInEGP / rates[to].sell;
+        const amountInEGP = amount * rates[from].value;
+        const finalResult = amountInEGP / rates[to].value;
 
-        document.getElementById('mainResult').innerText = 
+        document.getElementById('result').innerText = 
             finalResult.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + to;
-
-        // عرض تفاصيل البيع والشراء للعملة المحول منها
-        document.getElementById('sellRate').innerText = rates[from].sell.toFixed(2);
-        document.getElementById('buyRate').innerText = rates[from].buy.toFixed(2);
     }
 
-    window.onload = initCalculator;
+    window.onload = initConverter;
 </script>
 
 </body>
