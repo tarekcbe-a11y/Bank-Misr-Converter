@@ -97,9 +97,37 @@
             cursor: pointer;
         }
 
+        .rates-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .rate-box {
+            background: #1f2937;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px dashed #d4af37;
+        }
+
+        .rate-label {
+            font-size: 11px;
+            color: #94a3b8;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .rate-value {
+            font-size: 15px;
+            font-weight: bold;
+            color: #f8fafc;
+        }
+
         .result-box {
             background: #1f2937;
-            padding: 15px;
+            padding: 12px;
             border-radius: 10px;
             text-align: center;
             border: 1px dashed #d4af37;
@@ -110,11 +138,11 @@
             font-size: 12px;
             color: #94a3b8;
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
 
         #result {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
             color: #d4af37;
         }
@@ -171,6 +199,17 @@
         <select id="toCurrency" onchange="convertCurrency()"></select>
     </div>
 
+    <div class="rates-grid">
+        <div class="rate-box">
+            <span class="rate-label">📈 سعر البيع</span>
+            <span id="sellRate" class="rate-value">--</span>
+        </div>
+        <div class="rate-box">
+            <span class="rate-label">📉 سعر الشراء</span>
+            <span id="buyRate" class="rate-value">--</span>
+        </div>
+    </div>
+
     <div class="result-box">
         <span class="result-label">القيمة الناتجة:</span>
         <span id="result">0.00 EGP</span>
@@ -189,15 +228,16 @@
 <script>
     function initConverter() {
         const data = window.currencyData;
-        const rates = data.rates;
+        if (!data || !data.rates) return;
         
+        const rates = data.rates;
         const fromSelect = document.getElementById('fromCurrency');
         const toSelect = document.getElementById('toCurrency');
 
         fromSelect.innerHTML = '';
         toSelect.innerHTML = '';
 
-        // بناء القوائم المنسدلة بالترتيب الموجود في ملف البيانات (يبدأ بالجنيه المصري)
+        // تعبئة القوائم المنسدلة بالترتيب تبدأ بالجنيه المصري
         for (let code in rates) {
             let item = rates[code];
             let optionText = `${item.flag} ${item.name} (${code})`;
@@ -206,7 +246,7 @@
             toSelect.add(new Option(optionText, code));
         }
 
-        // القيم الافتتاحية المطلوبة عند الفتح: من دولار أمريكي إلى جنيه مصري
+        // القيم الافتتاحية: من دولار أمريكي إلى جنيه مصري
         fromSelect.value = "USD";
         toSelect.value = "EGP";
 
@@ -215,16 +255,24 @@
     }
 
     function convertCurrency() {
+        const data = window.currencyData;
+        if (!data || !data.rates) return;
+
         const amount = parseFloat(document.getElementById('amount').value) || 0;
         const from = document.getElementById('fromCurrency').value;
         const to = document.getElementById('toCurrency').value;
-        const rates = window.currencyData.rates;
+        const rates = data.rates;
 
-        const amountInEGP = amount * rates[from].value;
-        const finalResult = amountInEGP / rates[to].value;
+        // التحويل يعتمد على سعر البيع كمعيار أساسي
+        const amountInEGP = amount * rates[from].sell;
+        const finalResult = amountInEGP / rates[to].sell;
 
         document.getElementById('result').innerText = 
             finalResult.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + to;
+
+        // عرض تفاصيل البيع والشراء للعملة المحول منها
+        document.getElementById('sellRate').innerText = rates[from].sell.toFixed(2);
+        document.getElementById('buyRate').innerText = rates[from].buy.toFixed(2);
     }
 
     window.onload = initConverter;
