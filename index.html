@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>جدول أسعار العملات - جروب عملاء البنوك المصرية</title>
+    <title>حاسبة العملات - جروب عملاء البنوك المصرية</title>
     <style>
         body {
             background-color: #0b0f19;
@@ -39,12 +39,20 @@
         .logo-img { width: 24px; height: 24px; object-fit: contain; }
         .group-title { color: #d4af37; font-size: 12px; font-weight: bold; }
         h3 { color: #d4af37; text-align: center; margin-bottom: 12px; font-size: 14px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
-        th, td { padding: 8px 6px; text-align: center; border-bottom: 1px solid #1f2937; }
-        th { color: #d4af37; font-size: 12px; background-color: #1f2937; }
-        td { color: #f8fafc; }
-        .currency-name { text-align: right; }
-        .update-info { text-align: center; font-size: 10px; color: #64748b; margin-top: 12px; }
+        .input-group { margin-bottom: 10px; }
+        .input-group label { display: block; margin-bottom: 4px; font-size: 12px; color: #94a3b8; }
+        .input-group input, .input-group select {
+            width: 100%; padding: 8px 10px; background: #1f2937; border: 1px solid #374151;
+            color: #fff; border-radius: 8px; box-sizing: border-box; font-size: 13px; text-align: right; outline: none; cursor: pointer;
+        }
+        .input-group select:focus, .input-group input:focus { border-color: #d4af37; }
+        .result-box {
+            background: #1f2937; padding: 10px; border-radius: 8px; text-align: center;
+            border: 1px dashed #d4af37; margin-top: 12px;
+        }
+        .result-label { font-size: 11px; color: #94a3b8; display: block; margin-bottom: 2px; }
+        #result { font-size: 16px; font-weight: bold; color: #d4af37; }
+        .update-info { text-align: center; font-size: 10px; color: #64748b; margin-top: 10px; }
         .footer-divider { border: none; border-top: 1px solid rgba(212, 175, 55, 0.3); margin: 12px 0 8px 0; }
         .footer-branding { text-align: center; color: #d4af37; font-size: 11px; }
         .footer-developer { color: #d4af37; font-size: 10px; margin-top: 2px; text-align: center; }
@@ -57,42 +65,77 @@
         <img src="logo.png" alt="Logo" class="logo-img">
         <span class="group-title">جروب عملاء البنوك المصرية 🛡️</span>
     </div>
-    <h3>📊 جدول أسعار العملات اللحظية</h3>
-    <table>
-        <thead>
-            <tr>
-                <th class="currency-name">العملة</th>
-                <th>الشراء</th>
-                <th>البيع</th>
-            </tr>
-        </thead>
-        <tbody id="ratesTableBody"></tbody>
-    </table>
-    <div class="update-info" id="updateTime">آخر تحديث: 16 أغسطس 2026 - مرجع بنك مصر</div>
+    <h3>💱 حاسبة العملات اللحظية</h3>
+    
+    <div class="input-group">
+        <label>المبلغ:</label>
+        <input type="number" id="amount" value="1" oninput="convertCurrency()">
+    </div>
+
+    <div class="input-group">
+        <label>من عملة:</label>
+        <select id="fromCurrency" onchange="convertCurrency()"></select>
+    </div>
+
+    <div class="input-group">
+        <label>إلى عملة:</label>
+        <select id="toCurrency" onchange="convertCurrency()"></select>
+    </div>
+
+    <div class="result-box">
+        <span class="result-label">القيمة الناتجة:</span>
+        <span id="result">0.00 جنيه</span>
+    </div>
+    
+    <div class="update-info" id="updateTime">جاري التحديث...</div>
+
     <hr class="footer-divider">
     <div class="footer-branding">جروب عملاء البنوك المصرية 🛡️</div>
     <div class="footer-developer">Developed by Tarek Metwally</div>
 </div>
 
+<script src="rates.js"></script>
 <script>
-    const ratesData = {
-        updateDate: "16 أغسطس 2026",
-        rates: {
-            EGP: { name: "جنيه مصري", flag: "🇪🇬", buy: 1.00, sell: 1.00 },
-            USD: { name: "دولار أمريكي", flag: "🇺🇸", buy: 50.18, sell: 50.28 },
-            EUR: { name: "يورو", flag: "🇪🇺", buy: 57.85, sell: 58.00 },
-            GBP: { name: "جنيه إسترليني", flag: "🇬🇧", buy: 67.65, sell: 67.82 },
-            SAR: { name: "ريال سعودي", flag: "🇸🇦", buy: 13.34, sell: 13.38 },
-            AED: { name: "درهم إماراتي", flag: "🇦🇪", buy: 13.65, sell: 13.68 },
-            KWD: { name: "دينار كويتي", flag: "🇰🇼", buy: 163.10, sell: 163.75 }
+    function initCalc() {
+        if (typeof window.currencyData === 'undefined') {
+            setTimeout(initCalc, 50);
+            return;
         }
-    };
+        const rates = window.currencyData.rates;
+        const fromSelect = document.getElementById('fromCurrency');
+        const toSelect = document.getElementById('toCurrency');
 
-    const tbody = document.getElementById('ratesTableBody');
-    for (let code in ratesData.rates) {
-        let item = ratesData.rates[code];
-        tbody.innerHTML += `<tr><td class="currency-name">${item.flag} ${item.name}</td><td>${item.buy.toFixed(2)}</td><td>${item.sell.toFixed(2)}</td></tr>`;
+        fromSelect.innerHTML = '';
+        toSelect.innerHTML = '';
+
+        for (let code in rates) {
+            let item = rates[code];
+            let optText = `${item.flag} ${item.name} (${code})`;
+            fromSelect.add(new Option(optText, code));
+            toSelect.add(new Option(optText, code));
+        }
+
+        fromSelect.value = "USD";
+        toSelect.value = "EGP";
+        document.getElementById('updateTime').innerText = `مرجع بنك مصر - ${window.currencyData.updateDate}`;
+        convertCurrency();
     }
+
+    function convertCurrency() {
+        if (typeof window.currencyData === 'undefined') return;
+        let amount = parseFloat(document.getElementById('amount').value) || 0;
+        let from = document.getElementById('fromCurrency').value;
+        let to = document.getElementById('toCurrency').value;
+        let rates = window.currencyData.rates;
+
+        let amountInEGP = amount * rates[from].sell;
+        let finalResult = amountInEGP / rates[to].sell;
+
+        document.getElementById('result').innerText = 
+            finalResult.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' جنيه';
+    }
+
+    window.onload = initCalc;
 </script>
 </body>
 </html>
