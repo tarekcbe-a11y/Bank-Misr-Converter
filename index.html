@@ -190,16 +190,12 @@
 
     <div class="input-group">
         <label>من عملة:</label>
-        <select id="fromCurrency" onchange="convertCurrency()">
-            <!-- يتم تعبئتها تلقائياً وتبدأ بالجنيه -->
-        </select>
+        <select id="fromCurrency" onchange="convertCurrency()"></select>
     </div>
 
     <div class="input-group">
         <label>إلى عملة:</label>
-        <select id="toCurrency" onchange="convertCurrency()">
-            <!-- يتم تعبئتها تلقائياً وتبدأ بالجنيه -->
-        </select>
+        <select id="toCurrency" onchange="convertCurrency()"></select>
     </div>
 
     <div class="rates-grid">
@@ -219,7 +215,7 @@
     </div>
     
     <div class="update-info" id="updateTime">
-        آخر تحديث: 16 أغسطس 2026 - مرجع بنك مصر
+        جاري تحميل التحديثات...
     </div>
 
     <hr class="footer-divider">
@@ -228,10 +224,11 @@
     <div class="footer-developer">Developed by Tarek Metwally</div>
 </div>
 
-<!-- استدعاء ملف البيانات مع إضافة كود منع التخزين المؤقت timestamp -->
+<!-- استدعاء ملف العملات الخارجي مع رقم إصدار لمنع التخزين المؤقت -->
 <script src="rates.js?v=20260816"></script>
 <script>
     function initConverter() {
+        // التأكد من تحميل ملف rates.js بنجاح
         if (typeof window.currencyData === 'undefined' || !window.currencyData.rates) {
             setTimeout(initConverter, 50);
             return;
@@ -244,7 +241,7 @@
         fromSelect.innerHTML = '';
         toSelect.innerHTML = '';
 
-        // تعبئة القوائم المنسدلة تبدأ بالجنيه المصري (EGP) ثم باقي العملات
+        // تعبئة القوائم المنسدلة تبدأ بالجنيه المصري (EGP) ثم باقي العملات بالعربي والأعلام
         for (let code in rates) {
             let item = rates[code];
             let optionText = `${item.flag} ${item.name} (${code})`;
@@ -253,7 +250,7 @@
             toSelect.add(new Option(optionText, code));
         }
 
-        // القيم الافتتاحية: من دولار أمريكي إلى جنيه مصري
+        // القيم الافتتاحية المطلوبة
         fromSelect.value = "USD";
         toSelect.value = "EGP";
 
@@ -281,7 +278,7 @@
         document.getElementById('buyRate').innerText = rates[from].buy.toFixed(2);
     }
 
-    // التشغيل المباشر فور تحميل الصفحة
+    // التشغيل المباشر عند اكتمال تحميل عناصر الصفحة وملف البيانات
     window.addEventListener('DOMContentLoaded', initConverter);
 </script>
 
