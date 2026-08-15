@@ -2,41 +2,179 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>حاسبة العملات - جروب عملاء البنوك المصرية</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أسعار العملات - جروب عملاء البنوك المصرية</title>
     <style>
-        body { background-color: #0b0f19; font-family: Tahoma, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .card { background-color: #111827; color: #f3f4f6; padding: 20px; border-radius: 16px; border: 1px solid #d4af37; width: 350px; }
-        h3 { color: #d4af37; text-align: center; }
-        .input-group { margin-bottom: 15px; }
-        select, input { width: 100%; padding: 10px; background: #1f2937; border: 1px solid #374151; color: white; border-radius: 8px; box-sizing: border-box; }
-        .result { text-align: center; font-size: 18px; font-weight: bold; color: #d4af37; margin-top: 20px; }
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #111827;
+            --border-color: #f59e0b;
+            --text-primary: #ffffff;
+            --text-secondary: #9ca3af;
+            --accent-color: #38bdf8;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: 'Cairo', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background-color: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(245, 158, 11, 0.3);
+            padding-bottom: 15px;
+        }
+
+        .header h2 {
+            color: var(--border-color);
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .rates-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .rate-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .currency-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .flag {
+            font-size: 24px;
+        }
+
+        .currency-names {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .currency-code {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .currency-name {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .prices {
+            display: flex;
+            gap: 15px;
+            text-align: left;
+        }
+
+        .price-box {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .price-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .price-value {
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            border-top: 1px solid rgba(245, 158, 11, 0.3);
+            padding-top: 15px;
+        }
     </style>
 </head>
 <body>
-<div class="card">
-    <h3>💱 حاسبة العملات</h3>
-    <div class="input-group"><input type="number" id="amount" value="1" oninput="calc()"></div>
-    <div class="input-group"><select id="from" onchange="calc()"></select></div>
-    <div class="input-group"><select id="to" onchange="calc()"></select></div>
-    <div class="result" id="res">0.00 جنيه</div>
-</div>
-<script src="rates.js"></script>
-<script>
-    const from = document.getElementById('from');
-    const to = document.getElementById('to');
-    for(let code in currencyData.rates) {
-        let name = currencyData.rates[code].name;
-        from.add(new Option(name, code));
-        to.add(new Option(name, code));
-    }
-    from.value = "USD"; to.value = "EGP";
-    function calc() {
-        let val = document.getElementById('amount').value;
-        let r = currencyData.rates;
-        let res = (val * r[from.value].sell) / r[to.value].sell;
-        document.getElementById('res').innerText = res.toLocaleString('en-US', {minimumFractionDigits: 2}) + " جنيه";
-    }
-    calc();
-</script>
+
+    <div class="container">
+        <div class="header">
+            <h2>🇧🇭 جروب عملاء البنوك المصرية</h2>
+            <p style="margin: 5px 0 0 0; font-size: 14px; color: var(--accent-color);">سعر صرف الجنيه المصري</p>
+        </div>
+
+        <div class="rates-list" id="ratesContainer">
+            <!-- سيتم تعبئة البيانات برمجياً من ملف rates.js -->
+        </div>
+
+        <div class="footer">
+            جروب عملاء البنوك المصرية <br>
+            <span style="font-size: 10px;">Developed by Tarek Metwally</span>
+        </div>
+    </div>
+
+    <!-- استدعاء ملف الأسعار اليومي -->
+    <script src="rates.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const container = document.getElementById("ratesContainer");
+            
+            if (typeof exchangeRates !== 'undefined') {
+                exchangeRates.forEach(item => {
+                    const rateElement = document.createElement("div");
+                    rateElement.className = "rate-item";
+                    rateElement.innerHTML = `
+                        <div class="currency-info">
+                            <span class="flag">${item.flag}</span>
+                            <div class="currency-names">
+                                <span class="currency-code">${item.code}</span>
+                                <span class="currency-name">${item.name}</span>
+                            </div>
+                        </div>
+                        <div class="prices">
+                            <div class="price-box">
+                                <span class="price-label">شراء</span>
+                                <span class="price-value">${item.buy}</span>
+                            </div>
+                            <div class="price-box">
+                                <span class="price-label">بيع</span>
+                                <span class="price-value">${item.sell}</span>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(rateElement);
+                });
+            } else {
+                container.innerHTML = "<p style='text-align:center; color:red;'>تعذر تحميل بيانات الأسعار</p>";
+            }
+        });
+    </script>
 </body>
 </html>
