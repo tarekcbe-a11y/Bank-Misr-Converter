@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>حاسبة تحويل العملات اللحظية - جروب عملاء البنوك المصرية</title>
-    <script src="rates.js"></script>
     <style>
         body {
             background-color: #0b0f19;
@@ -191,12 +190,16 @@
 
     <div class="input-group">
         <label>من عملة:</label>
-        <select id="fromCurrency" onchange="convertCurrency()"></select>
+        <select id="fromCurrency" onchange="convertCurrency()">
+            <!-- يتم تعبئتها تلقائياً وتبدأ بالجنيه -->
+        </select>
     </div>
 
     <div class="input-group">
         <label>إلى عملة:</label>
-        <select id="toCurrency" onchange="convertCurrency()"></select>
+        <select id="toCurrency" onchange="convertCurrency()">
+            <!-- يتم تعبئتها تلقائياً وتبدأ بالجنيه -->
+        </select>
     </div>
 
     <div class="rates-grid">
@@ -225,10 +228,12 @@
     <div class="footer-developer">Developed by Tarek Metwally</div>
 </div>
 
+<!-- استدعاء ملف البيانات مع إضافة كود منع التخزين المؤقت timestamp -->
+<script src="rates.js?v=20260816"></script>
 <script>
     function initConverter() {
         if (typeof window.currencyData === 'undefined' || !window.currencyData.rates) {
-            setTimeout(initConverter, 100);
+            setTimeout(initConverter, 50);
             return;
         }
 
@@ -239,6 +244,7 @@
         fromSelect.innerHTML = '';
         toSelect.innerHTML = '';
 
+        // تعبئة القوائم المنسدلة تبدأ بالجنيه المصري (EGP) ثم باقي العملات
         for (let code in rates) {
             let item = rates[code];
             let optionText = `${item.flag} ${item.name} (${code})`;
@@ -247,6 +253,7 @@
             toSelect.add(new Option(optionText, code));
         }
 
+        // القيم الافتتاحية: من دولار أمريكي إلى جنيه مصري
         fromSelect.value = "USD";
         toSelect.value = "EGP";
 
@@ -274,7 +281,8 @@
         document.getElementById('buyRate').innerText = rates[from].buy.toFixed(2);
     }
 
-    window.onload = initConverter;
+    // التشغيل المباشر فور تحميل الصفحة
+    window.addEventListener('DOMContentLoaded', initConverter);
 </script>
 
 </body>
