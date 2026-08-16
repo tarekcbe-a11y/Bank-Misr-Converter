@@ -62,7 +62,7 @@
     <h2>حاسبة تحويل العملات المتقدمة</h2>
     
     <div id="errorBox" class="error-message">
-        خطأ: لم يتم العثور على ملف الأسعار (rates.js). يرجى التأكد من رفع الملف بنفس الاسم بحروف صغيرة. ⚠️
+        خطأ: لم يتم العثور على ملف الأسعار (rates.js). يرجى التأكد من رفع الملف. ⚠️
     </div>
 
     <div class="input-group">
@@ -96,7 +96,7 @@
     </div>
 
     <div class="update-info" id="updateTime">--</div>
-    <div class="source-note" id="sourceNote">سعر صرف الجنيه المصري</div>
+    <div class="source-note">طبقاً لأسعار بنك مصر</div>
 
     <hr class="footer-divider">
     <div class="footer-branding">
@@ -105,7 +105,6 @@
     </div>
 </div>
 
-<!-- استدعاء ملف الأسعار الخارجي (تم تعديل الاسم لحروف صغيرة لتطابق غيت هب) -->
 <script src="rates.js"></script>
 
 <script>
@@ -115,15 +114,13 @@ window.addEventListener('DOMContentLoaded', () => {
     const updateTimeEl = document.getElementById('updateTime');
     const errorBox = document.getElementById('errorBox');
 
-    // التحقق من أن ملف rates.js تم تحميله بنجاح وقرأ المتغيرات
     if (typeof currencies === 'undefined' || typeof exchangeRates === 'undefined') {
-        errorBox.style.display = 'block'; // إظهار رسالة الخطأ
+        errorBox.style.display = 'block';
         fromSel.innerHTML = '<option>خطأ في التحميل</option>';
         toSel.innerHTML = '<option>خطأ في التحميل</option>';
-        return; // إيقاف التشغيل
+        return;
     }
 
-    // إذا تم التحميل بنجاح، نبدأ عرض القوائم
     fromSel.innerHTML = '';
     toSel.innerHTML = '';
     currencies.forEach(c => {
