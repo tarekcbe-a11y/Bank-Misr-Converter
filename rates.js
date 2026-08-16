@@ -30,4 +30,4 @@ const exchangeRates = {
     EGP: { buy: 1.00, sell: 1.00 }
 };
 
-const lastUpdatedText = "تاريخ التحديث: 04:21 م";
+const lastUpdatedText = "تاريخ التحديث: 2026-08-16 - 08:05 م";
