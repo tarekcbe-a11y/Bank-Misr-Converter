@@ -15,7 +15,7 @@ const currencies = [
 ];
 
 const exchangeRates = {
-    USD: { buy: 50.20, sell: 50.30 },
+    USD: { buy: 50.21, sell: 50.30 },
     EUR: { buy: 57.8600, sell: 58.2726 },
     SAR: { buy: 13.3337, sell: 13.398 },
     GBP: { buy: 67.6897, sell: 68.2118 },
