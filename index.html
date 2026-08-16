@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>حاسبة تحويل العملات المتقدمة - جروب عملاء البنوك المصرية</title>
+    <title>حاسبة تحويل العملات المتقدمة</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { 
@@ -88,7 +88,8 @@
         </div>
     </div>
 
-    <div class="update-info" id="updateTime">الأسعار محدثة محلياً</div>
+    <!-- مكان عرض وقت التحديث المرتبط بالأسعار -->
+    <div class="update-info" id="updateTime">آخر تحديث: --</div>
     <div class="source-note" id="sourceNote">أسعار مرجعية رسمية لأسواق البنوك المصرية</div>
     <button class="refresh-btn" id="refreshBtn" onclick="convert()">إعادة الحساب 🔄</button>
 
@@ -99,8 +100,6 @@
     </div>
 </div>
 
-<!-- استدعاء ملف الأسعار اليومي المنفصل -->
-<script src="rates.js"></script>
 <script>
 const currencies = [
     { code: "EGP", name: "الجنيه المصري", flag: "🇪🇬" },
@@ -121,6 +120,29 @@ const currencies = [
     { code: "CNY", name: "اليوان الصيني", flag: "🇨🇳" }
 ];
 
+// 📌 وقت التحديث والأسعار: (عندما تود تغيير الأسعار، قم بتعديل التاريخ والساعة هنا يدوياً لتتحدث في الموقع)
+const lastUpdatedText = "تاريخ التحديث: 2026-03-02 - 03:30 م";
+
+const exchangeRates = {
+    EGP: 1.00,
+    USD: 50.23,
+    EUR: 54.90,
+    SAR: 13.34,
+    GBP: 64.73,
+    AED: 13.66,
+    CHF: 58.66,
+    AUD: 30.43,
+    BHD: 131.30,
+    CAD: 36.04,
+    CNY: 7.44,
+    DKK: 7.74,
+    JOD: 70.39,
+    KWD: 163.20,
+    QAR: 13.75,
+    OMR: 130.50,
+    JPY: 0.33
+};
+
 const fromSel = document.getElementById('from');
 const toSel = document.getElementById('to');
 const updateTimeEl = document.getElementById('updateTime');
@@ -136,11 +158,6 @@ function convert() {
   const amount = parseFloat(document.getElementById('amount').value) || 0;
   const from = fromSel.value;
   const to = toSel.value;
-  
-  if (typeof exchangeRates === 'undefined') {
-      alert("تعذر تحميل ملف الأسعار rates.js");
-      return;
-  }
 
   const amountInEGP = amount * (exchangeRates[from] || 1);
   const baseResult = amountInEGP / (exchangeRates[to] || 1);
@@ -154,8 +171,8 @@ function convert() {
   document.getElementById('buyResult').innerText = `${buyValue.toFixed(2)} ${targetName}`;
   document.getElementById('sellResult').innerText = `${sellValue.toFixed(2)} ${targetName}`;
   
-  const now = new Date();
-  updateTimeEl.textContent = `آخر تحديث: ${now.toLocaleDateString('ar-EG')} - ${now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}`;
+  // تثبيت وقت التحديث بحيث لا يتغير إلا إذا تغير المتغير الثابت بالأعلى
+  updateTimeEl.textContent = lastUpdatedText;
 }
 
 document.getElementById('amount').addEventListener('input', convert);
