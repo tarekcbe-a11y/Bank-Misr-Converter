@@ -95,17 +95,17 @@
     </div>
 </div>
 
-<!-- ربط ملف الأسعار الخارجي -->
+<!-- استدعاء ملف الأسعار الخارجي -->
 <script src="Rates.js"></script>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
+window.addEventListener('DOMContentLoaded', () => {
     const fromSel = document.getElementById('from');
     const toSel = document.getElementById('to');
     const updateTimeEl = document.getElementById('updateTime');
 
-    // التأكد من تحميل القوائم من ملف Rates.js
-    if (typeof currencies !== 'undefined' && currencies.length > 0) {
+    // التحقق من تحميل مصفوفة العملات من Rates.js
+    if (typeof currencies !== 'undefined' && Array.isArray(currencies)) {
         fromSel.innerHTML = '';
         toSel.innerHTML = '';
         currencies.forEach(c => {
