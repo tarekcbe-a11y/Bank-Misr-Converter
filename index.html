@@ -85,7 +85,7 @@
         </div>
     </div>
 
-    <div class="update-info" id="updateTime">آخر تحديث: --</div>
+    <div class="update-info" id="updateTime">--</div>
     <div class="source-note" id="sourceNote">أسعار مرجعية رسمية لأسواق البنوك المصرية</div>
 
     <hr class="footer-divider">
@@ -95,70 +95,39 @@
     </div>
 </div>
 
+<!-- ربط ملف الأسعار الخارجي Rates.js -->
+<script src="Rates.js"></script>
+
 <script>
-const currencies = [
-    { code: "EGP", name: "الجنيه المصري", flag: "🇪🇬" },
-    { code: "USD", name: "الدولار الأمريكي", flag: "🇺🇸" },
-    { code: "EUR", name: "اليورو الأوروبي", flag: "🇪🇺" },
-    { code: "GBP", name: "الجنيه الاسترليني", flag: "🇬🇧" },
-    { code: "SAR", name: "الريال السعودي", flag: "🇸🇦" },
-    { code: "AED", name: "الدولار الاماراتي", flag: "🇦🇪" },
-    { code: "KWD", name: "الدينار الكويتي", flag: "🇰🇼" },
-    { code: "QAR", name: "الريال القطري", flag: "🇶🇦" },
-    { code: "BHD", name: "الدينار البحريني", flag: "🇧🇭" },
-    { code: "OMR", name: "الريال العماني", flag: "🇴🇲" },
-    { code: "JOD", name: "الدينار الأردني", flag: "🇯🇴" },
-    { code: "CAD", name: "الدولار الكندي", flag: "🇨🇦" },
-    { code: "AUD", name: "الدولار الأسترالي", flag: "🇦🇺" },
-    { code: "CHF", name: "الفرنك السويسري", flag: "🇨🇭" },
-    { code: "JPY", name: "الين الياباني", flag: "🇯🇵" },
-    { code: "CNY", name: "اليوان الصيني", flag: "🇨🇳" }
-];
-
-// 📌 لتحديث تاريخ وساعة التحديث، قم بتعديل هذا النص يدوياً عند كل تحديث للأسعار
-const lastUpdatedText = "تاريخ التحديث: 2026-03-02 - 03:30 م";
-
-const exchangeRates = {
-    EGP: 1.00,
-    USD: 50.23,
-    EUR: 54.90,
-    SAR: 13.34,
-    GBP: 64.73,
-    AED: 13.66,
-    CHF: 58.66,
-    AUD: 30.43,
-    BHD: 131.30,
-    CAD: 36.04,
-    CNY: 7.44,
-    DKK: 7.74,
-    JOD: 70.39,
-    KWD: 163.20,
-    QAR: 13.75,
-    OMR: 130.50,
-    JPY: 0.33
-};
-
 const fromSel = document.getElementById('from');
 const toSel = document.getElementById('to');
 const updateTimeEl = document.getElementById('updateTime');
 
-currencies.forEach(c => {
-  fromSel.innerHTML += `<option value="${c.code}">${c.flag} ${c.name} (${c.code})</option>`;
-  toSel.innerHTML += `<option value="${c.code}">${c.flag} ${c.name} (${c.code})</option>`;
-});
+// تعبئة القوائم المنسدلة بناءً على ملف Rates.js الخارجي
+if (typeof currencies !== 'undefined') {
+    currencies.forEach(c => {
+      fromSel.innerHTML += `<option value="${c.code}">${c.flag} ${c.name} (${c.code})</option>`;
+      toSel.innerHTML += `<option value="${c.code}">${c.flag} ${c.name} (${c.code})</option>`;
+    });
+}
 fromSel.value = "USD";
 toSel.value = "EGP";
 
 function convert() {
+  if (typeof exchangeRates === 'undefined') return;
+  
   const amount = parseFloat(document.getElementById('amount').value) || 0;
   const from = fromSel.value;
   const to = toSel.value;
 
-  const amountInEGP = amount * (exchangeRates[from] || 1);
-  const baseResult = amountInEGP / (exchangeRates[to] || 1);
-  
-  const buyValue = baseResult * 0.9985; 
-  const sellValue = baseResult * 1.0015;
+  // جلب أسعار الشراء والبيع للعملة الأولى
+  const fromRateObj = exchangeRates[from] || { buy: 1, sell: 1 };
+  // جلب أسعار الشراء والبيع للعملة المستهدفة
+  const toRateObj = exchangeRates[to] || { buy: 1, sell: 1 };
+
+  // حساب التحويل بناءً على الشراء والبيع
+  const buyValue = amount * (fromRateObj.buy / toRateObj.buy);
+  const sellValue = amount * (fromRateObj.sell / toRateObj.sell);
 
   const targetCurrencyObj = currencies.find(c => c.code === to);
   const targetName = targetCurrencyObj ? targetCurrencyObj.name : to;
@@ -166,8 +135,9 @@ function convert() {
   document.getElementById('buyResult').innerText = `${buyValue.toFixed(2)} ${targetName}`;
   document.getElementById('sellResult').innerText = `${sellValue.toFixed(2)} ${targetName}`;
   
-  // يظهر وقت التحديث الثابت الخاص بآخر تعديل للأسعار
-  updateTimeEl.textContent = lastUpdatedText;
+  if (typeof lastUpdatedText !== 'undefined' && updateTimeEl) {
+      updateTimeEl.textContent = lastUpdatedText;
+  }
 }
 
 document.getElementById('amount').addEventListener('input', convert);
