@@ -14,7 +14,6 @@ const currencies = [
     { code: "EGP", name: "الجنيه المصري", flag: "🇪🇬" }
 ];
 
-// أسعار الشراء والبيع المستخرجة بدقة من الصورة المرفقة
 const exchangeRates = {
     USD: { buy: 50.23, sell: 50.33 },
     SAR: { buy: 13.3449, sell: 13.407 },
