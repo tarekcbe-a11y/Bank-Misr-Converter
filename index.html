@@ -45,8 +45,6 @@
         .update-info { text-align: center; font-size: 0.73rem; color: #94a3b8; margin-bottom: 6px; }
         .source-note { text-align: center; font-size: 0.68rem; color: #38bdf8; opacity: 0.9; margin-bottom: 10px; }
         
-        .error-message { display: none; background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; color: #fca5a5; padding: 10px; border-radius: 8px; text-align: center; font-size: 0.85rem; margin-bottom: 10px; }
-
         .footer-divider { border: 0; height: 1px; background: rgba(251,191,36,0.3); margin: 12px 0 8px 0; }
         .footer-branding { text-align: center; font-size: 0.78rem; }
         .footer-group-name { color: #fbbf24; font-weight: bold; margin-bottom: 2px; word-break: break-word; }
@@ -61,10 +59,6 @@
 
     <h2>حاسبة تحويل العملات المتقدمة</h2>
     
-    <div id="errorBox" class="error-message">
-        خطأ: لم يتم العثور على ملف الأسعار (rates.js). يرجى التأكد من رفع الملف. ⚠️
-    </div>
-
     <div class="input-group">
         <label>المبلغ</label>
         <input type="number" id="amount" value="1">
@@ -72,16 +66,12 @@
     
     <div class="input-group">
         <label>من عملة</label>
-        <select id="from">
-            <option>جاري التحميل...</option>
-        </select>
+        <select id="from"></select>
     </div>
     
     <div class="input-group">
         <label>إلى عملة</label>
-        <select id="to">
-            <option>جاري التحميل...</option>
-        </select>
+        <select id="to"></select>
     </div>
     
     <div class="results-container">
@@ -105,30 +95,56 @@
     </div>
 </div>
 
-<script src="rates.js"></script>
-
 <script>
-window.addEventListener('DOMContentLoaded', () => {
+const currencies = [
+    { code: "USD", name: "دولار أمريكي", flag: "🇺🇸" },
+    { code: "EUR", name: "يورو", flag: "🇪🇺" },
+    { code: "SAR", name: "ريال سعودي", flag: "🇸🇦" },
+    { code: "GBP", name: "جنيه إسترليني", flag: "🇬🇧" },
+    { code: "AED", name: "درهم إماراتي", flag: "🇦🇪" },
+    { code: "CHF", name: "فرنك سويسري", flag: "🇨🇭" },
+    { code: "AUD", name: "دولار أسترالي", flag: "🇦🇺" },
+    { code: "BHD", name: "دينار بحريني", flag: "🇧🇭" },
+    { code: "CAD", name: "دولار كندي", flag: "🇨🇦" },
+    { code: "CNY", name: "يوان صيني", flag: "🇨🇳" },
+    { code: "DKK", name: "كرونة دنماركية", flag: "🇩🇰" },
+    { code: "JOD", name: "دينار أردني", flag: "🇯🇴" },
+    { code: "EGP", name: "جنيه مصري", flag: "🇪🇬" }
+];
+
+const exchangeRates = {
+    USD: { buy: 50.20, sell: 50.30 },
+    EUR: { buy: 57.8600, sell: 58.2726 },
+    SAR: { buy: 13.3337, sell: 13.398 },
+    GBP: { buy: 67.6897, sell: 68.2118 },
+    AED: { buy: 13.6544, sell: 13.696 },
+    CHF: { buy: 61.6329, sell: 62.0681 },
+    AUD: { buy: 30.4161, sell: 30.6878 },
+    BHD: { buy: 131.221, sell: 133.422 },
+    CAD: { buy: 36.0192, sell: 36.2784 },
+    CNY: { buy: 7.44156, sell: 7.4628 },
+    DKK: { buy: 7.7407, sell: 7.7907 },
+    JOD: { buy: 70.3574, sell: 71.0452 },
+    EGP: { buy: 1.00, sell: 1.00 }
+};
+
+const lastUpdatedText = "تاريخ التحديث: 2026-08-16 - 08:05 م";
+
+document.addEventListener("DOMContentLoaded", () => {
     const fromSel = document.getElementById('from');
     const toSel = document.getElementById('to');
     const updateTimeEl = document.getElementById('updateTime');
-    const errorBox = document.getElementById('errorBox');
 
-    if (typeof currencies === 'undefined' || typeof exchangeRates === 'undefined') {
-        errorBox.style.display = 'block';
-        fromSel.innerHTML = '<option>خطأ في التحميل</option>';
-        toSel.innerHTML = '<option>خطأ في التحميل</option>';
-        return;
+    if (currencies && currencies.length > 0) {
+        fromSel.innerHTML = '';
+        toSel.innerHTML = '';
+        currencies.forEach(c => {
+            fromSel.innerHTML += `<option value="${c.code}">${c.flag} ${c.name} (${c.code})</option>`;
+            toSel.innerHTML += `<option value="${c.code}">${c.flag} ${c.name} (${c.code})</option>`;
+        });
+        fromSel.value = "USD";
+        toSel.value = "EGP";
     }
-
-    fromSel.innerHTML = '';
-    toSel.innerHTML = '';
-    currencies.forEach(c => {
-        fromSel.innerHTML += `<option value="${c.code}">${c.flag} ${c.name} (${c.code})</option>`;
-        toSel.innerHTML += `<option value="${c.code}">${c.flag} ${c.name} (${c.code})</option>`;
-    });
-    fromSel.value = "USD";
-    toSel.value = "EGP";
 
     function convert() {
         const amount = parseFloat(document.getElementById('amount').value) || 0;
@@ -144,7 +160,7 @@ window.addEventListener('DOMContentLoaded', () => {
         document.getElementById('buyResult').innerText = `${buyValue.toFixed(2)} ${to}`;
         document.getElementById('sellResult').innerText = `${sellValue.toFixed(2)} ${to}`;
         
-        if (typeof lastUpdatedText !== 'undefined' && updateTimeEl) {
+        if (updateTimeEl) {
             updateTimeEl.textContent = lastUpdatedText;
         }
     }
