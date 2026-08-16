@@ -1,33 +1,33 @@
 const currencies = [
-    { code: "USD", name: "الدولار الأمريكي", flag: "🇺🇸" },
-    { code: "SAR", name: "الريال السعودي", flag: "🇸🇦" },
-    { code: "EUR", name: "اليورو الأوروبي", flag: "🇪🇺" },
-    { code: "AED", name: "الدرهم الإماراتي", flag: "🇦🇪" },
-    { code: "GBP", name: "الجنيه الاسترليني", flag: "🇬🇧" },
-    { code: "CHF", name: "الفرنك السويسري", flag: "🇨🇭" },
-    { code: "CAD", name: "الدولار الكندي", flag: "🇨🇦" },
-    { code: "AUD", name: "الدولار الأسترالي", flag: "🇦🇺" },
-    { code: "BHD", name: "الدينار البحريني", flag: "🇧🇭" },
-    { code: "JOD", name: "الدينار الأردني", flag: "🇯🇴" },
-    { code: "CNY", name: "اليوان الصيني", flag: "🇨🇳" },
-    { code: "DKK", name: "الكرونة الدنماركية", flag: "🇩🇰" },
-    { code: "EGP", name: "الجنيه المصري", flag: "🇪🇬" }
+    { code: "USD", name: "دولار أمريكي", flag: "🇺🇸" },
+    { code: "EUR", name: "يورو", flag: "🇪🇺" },
+    { code: "SAR", name: "ريال سعودي", flag: "🇸🇦" },
+    { code: "GBP", name: "جنيه إسترليني", flag: "🇬🇧" },
+    { code: "AED", name: "درهم إماراتي", flag: "🇦🇪" },
+    { code: "CHF", name: "فرنك سويسري", flag: "🇨🇭" },
+    { code: "AUD", name: "دولار أسترالي", flag: "🇦🇺" },
+    { code: "BHD", name: "دينار بحريني", flag: "🇧🇭" },
+    { code: "CAD", name: "دولار كندي", flag: "🇨🇦" },
+    { code: "CNY", name: "يوان صيني", flag: "🇨🇳" },
+    { code: "DKK", name: "كرونة دنماركية", flag: "🇩🇰" },
+    { code: "JOD", name: "دينار أردني", flag: "🇯🇴" },
+    { code: "EGP", name: "جنيه مصري", flag: "🇪🇬" }
 ];
 
 const exchangeRates = {
-    USD: { buy: 50.23, sell: 50.33 },
-    SAR: { buy: 13.3449, sell: 13.407 },
-    EUR: { buy: 57.901, sell: 58.101 },
-    AED: { buy: 13.6626, sell: 13.7042 },
-    GBP: { buy: 67.7301, sell: 67.9161 },
-    CHF: { buy: 61.6697, sell: 61.8837 },
-    CAD: { buy: 36.0408, sell: 36.1906 },
-    AUD: { buy: 30.4373, sell: 30.507 },
-    BHD: { buy: 131.3, sell: 133.00 },
-    JOD: { buy: 70.3994, sell: 71.0876 },
-    CNY: { buy: 7.446, sell: 7.4615 },
-    DKK: { buy: 7.74533, sell: 7.77189 },
+    USD: { buy: 50.20, sell: 50.30 },
+    EUR: { buy: 57.8600, sell: 58.2726 },
+    SAR: { buy: 13.3337, sell: 13.398 },
+    GBP: { buy: 67.6897, sell: 68.2118 },
+    AED: { buy: 13.6544, sell: 13.696 },
+    CHF: { buy: 61.6329, sell: 62.0681 },
+    AUD: { buy: 30.4161, sell: 30.6878 },
+    BHD: { buy: 131.221, sell: 133.422 },
+    CAD: { buy: 36.0192, sell: 36.2784 },
+    CNY: { buy: 7.44156, sell: 7.4628 },
+    DKK: { buy: 7.7407, sell: 7.7907 },
+    JOD: { buy: 70.3574, sell: 71.0452 },
     EGP: { buy: 1.00, sell: 1.00 }
 };
 
-const lastUpdatedText = "تاريخ التحديث: 2026-08-16 - 11:09 ص";
+const lastUpdatedText = "تاريخ التحديث: 04:21 م";
