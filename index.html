@@ -42,11 +42,8 @@
         .result-value { font-size: 1.15rem; font-weight: bold; color: #38bdf8; word-break: break-word; }
         .result-box.sell .result-value { color: #fbbf24; }
 
-        .update-info { text-align: center; font-size: 0.73rem; color: #94a3b8; margin-bottom: 4px; }
+        .update-info { text-align: center; font-size: 0.73rem; color: #94a3b8; margin-bottom: 6px; }
         .source-note { text-align: center; font-size: 0.68rem; color: #38bdf8; opacity: 0.9; margin-bottom: 10px; }
-        
-        .refresh-btn { width: 100%; background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%); color: #050b14; border: none; padding: 11px; border-radius: 10px; font-size: 0.95rem; font-weight: bold; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.5), 0 0 10px rgba(56,189,248,0.3); transition: 0.2s; }
-        .refresh-btn:hover { background: linear-gradient(135deg, #7dd3fc 0%, #0284c7 100%); }
         
         .footer-divider { border: 0; height: 1px; background: rgba(251,191,36,0.3); margin: 12px 0 8px 0; }
         .footer-branding { text-align: center; font-size: 0.78rem; }
@@ -88,10 +85,8 @@
         </div>
     </div>
 
-    <!-- مكان عرض وقت التحديث المرتبط بالأسعار -->
     <div class="update-info" id="updateTime">آخر تحديث: --</div>
     <div class="source-note" id="sourceNote">أسعار مرجعية رسمية لأسواق البنوك المصرية</div>
-    <button class="refresh-btn" id="refreshBtn" onclick="convert()">إعادة الحساب 🔄</button>
 
     <hr class="footer-divider">
     <div class="footer-branding">
@@ -120,7 +115,7 @@ const currencies = [
     { code: "CNY", name: "اليوان الصيني", flag: "🇨🇳" }
 ];
 
-// 📌 وقت التحديث والأسعار: (عندما تود تغيير الأسعار، قم بتعديل التاريخ والساعة هنا يدوياً لتتحدث في الموقع)
+// 📌 لتحديث تاريخ وساعة التحديث، قم بتعديل هذا النص يدوياً عند كل تحديث للأسعار
 const lastUpdatedText = "تاريخ التحديث: 2026-03-02 - 03:30 م";
 
 const exchangeRates = {
@@ -171,7 +166,7 @@ function convert() {
   document.getElementById('buyResult').innerText = `${buyValue.toFixed(2)} ${targetName}`;
   document.getElementById('sellResult').innerText = `${sellValue.toFixed(2)} ${targetName}`;
   
-  // تثبيت وقت التحديث بحيث لا يتغير إلا إذا تغير المتغير الثابت بالأعلى
+  // يظهر وقت التحديث الثابت الخاص بآخر تعديل للأسعار
   updateTimeEl.textContent = lastUpdatedText;
 }
 
