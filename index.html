@@ -42,7 +42,7 @@
         .result-value { font-size: 1.15rem; font-weight: bold; color: #38bdf8; word-break: break-word; }
         .result-box.sell .result-value { color: #fbbf24; }
 
-        .update-info { text-align: center; font-size: 0.73rem; color: #94a3b8; margin-bottom: 4px; }
+        .update-info { text-align: center; font-size: 0.73rem; color: #94a3b8; margin-bottom: 6px; }
         .source-note { text-align: center; font-size: 0.68rem; color: #38bdf8; opacity: 0.9; margin-bottom: 10px; }
         
         .footer-divider { border: 0; height: 1px; background: rgba(251,191,36,0.3); margin: 12px 0 8px 0; }
@@ -95,51 +95,52 @@
     </div>
 </div>
 
-<!-- ربط ملف الأسعار الخارجي Rates.js -->
+<!-- ربط ملف الأسعار الخارجي -->
 <script src="Rates.js"></script>
 
 <script>
-const fromSel = document.getElementById('from');
-const toSel = document.getElementById('to');
-const updateTimeEl = document.getElementById('updateTime');
-
-// تعبئة القوائم المنسدلة فور تحميل الصفحة من ملف Rates.js
-if (typeof currencies !== 'undefined') {
-    currencies.forEach(c => {
-      fromSel.innerHTML += `<option value="${c.code}">${c.flag} ${c.name} (${c.code})</option>`;
-      toSel.innerHTML += `<option value="${c.code}">${c.flag} ${c.name} (${c.code})</option>`;
-    });
-}
-fromSel.value = "USD";
-toSel.value = "EGP";
-
-function convert() {
-  if (typeof exchangeRates === 'undefined') return;
-  
-  const amount = parseFloat(document.getElementById('amount').value) || 0;
-  const from = fromSel.value;
-  const to = toSel.value;
-
-  const fromRateObj = exchangeRates[from] || { buy: 1, sell: 1 };
-  const toRateObj = exchangeRates[to] || { buy: 1, sell: 1 };
-
-  // حساب دقيق للشراء والبيع بناءً على العملات المختارة
-  const buyValue = amount * (fromRateObj.buy / toRateObj.buy);
-  const sellValue = amount * (fromRateObj.sell / toRateObj.sell);
-
-  document.getElementById('buyResult').innerText = `${buyValue.toFixed(2)} ${to}`;
-  document.getElementById('sellResult').innerText = `${sellValue.toFixed(2)} ${to}`;
-  
-  if (typeof lastUpdatedText !== 'undefined' && updateTimeEl) {
-      updateTimeEl.textContent = lastUpdatedText;
-  }
-}
-
-document.getElementById('amount').addEventListener('input', convert);
-fromSel.addEventListener('change', convert);
-toSel.addEventListener('change', convert);
-
 document.addEventListener("DOMContentLoaded", () => {
+    const fromSel = document.getElementById('from');
+    const toSel = document.getElementById('to');
+    const updateTimeEl = document.getElementById('updateTime');
+
+    // التأكد من تحميل القوائم من ملف Rates.js
+    if (typeof currencies !== 'undefined' && currencies.length > 0) {
+        fromSel.innerHTML = '';
+        toSel.innerHTML = '';
+        currencies.forEach(c => {
+            fromSel.innerHTML += `<option value="${c.code}">${c.flag} ${c.name} (${c.code})</option>`;
+            toSel.innerHTML += `<option value="${c.code}">${c.flag} ${c.name} (${c.code})</option>`;
+        });
+        fromSel.value = "USD";
+        toSel.value = "EGP";
+    }
+
+    function convert() {
+        if (typeof exchangeRates === 'undefined') return;
+        
+        const amount = parseFloat(document.getElementById('amount').value) || 0;
+        const from = fromSel.value;
+        const to = toSel.value;
+
+        const fromRateObj = exchangeRates[from] || { buy: 1, sell: 1 };
+        const toRateObj = exchangeRates[to] || { buy: 1, sell: 1 };
+
+        const buyValue = amount * (fromRateObj.buy / toRateObj.buy);
+        const sellValue = amount * (fromRateObj.sell / toRateObj.sell);
+
+        document.getElementById('buyResult').innerText = `${buyValue.toFixed(2)} ${to}`;
+        document.getElementById('sellResult').innerText = `${sellValue.toFixed(2)} ${to}`;
+        
+        if (typeof lastUpdatedText !== 'undefined' && updateTimeEl) {
+            updateTimeEl.textContent = lastUpdatedText;
+        }
+    }
+
+    document.getElementById('amount').addEventListener('input', convert);
+    fromSel.addEventListener('change', convert);
+    toSel.addEventListener('change', convert);
+
     convert();
 });
 </script>
