@@ -2,189 +2,169 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أسعار العملات - جروب عملاء البنوك المصرية</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>حاسبة تحويل العملات المتقدمة - جروب عملاء البنوك المصرية</title>
     <style>
-        :root {
-            --bg-color: #0b0f19;
-            --card-bg: #111827;
-            --border-color: #f59e0b;
-            --text-primary: #ffffff;
-            --text-secondary: #9ca3af;
-            --accent-color: #38bdf8;
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { 
+            background: linear-gradient(135deg, #050b14 0%, #0a192f 50%, #02060d 100%); 
+            color: #f3f4f6; 
+            padding: 15px 10px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            width: 100%; 
+            overflow-x: hidden;
         }
+        .converter-card { 
+            background: linear-gradient(135deg, #0f2238 0%, #081220 50%, #0d1b2a 100%); 
+            border: 2px solid #fbbf24; 
+            border-radius: 18px; 
+            padding: 20px 15px; 
+            width: 100%; 
+            max-width: 400px; 
+            box-shadow: 0 12px 35px rgba(0,0,0,0.9), 0 0 20px rgba(14, 165, 233, 0.25), inset 0 1px 2px rgba(255,255,255,0.15); 
+            margin: 0 auto; 
+        }
+        .header-branding { text-align: center; margin-bottom: 12px; border-bottom: 1px solid rgba(251,191,36,0.3); padding-bottom: 8px; }
+        .group-title { font-size: 1.05rem; font-weight: bold; color: #fbbf24; line-height: 1.4; word-break: break-word; }
+        h2 { text-align: center; color: #38bdf8; margin-bottom: 12px; font-size: 1.2rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        .input-group { margin-bottom: 12px; width: 100%; }
+        label { display: block; margin-bottom: 5px; color: #7dd3fc; font-size: 0.88rem; font-weight: 600; text-align: right; }
+        input, select { padding: 10px; width: 100%; background: #07111d; border: 1px solid #38bdf8; border-radius: 10px; color: #fff; font-size: 0.98rem; outline: none; box-shadow: inset 0 2px 4px rgba(0,0,0,0.6); }
+        input:focus, select:focus { border-color: #fbbf24; box-shadow: 0 0 10px rgba(251,191,36,0.4); }
+        
+        .results-container { display: flex; gap: 10px; margin: 12px 0; }
+        .result-box { flex: 1; background: #060e18; border: 2px dashed #38bdf8; border-radius: 12px; padding: 10px 8px; text-align: center; box-shadow: inset 0 2px 5px rgba(0,0,0,0.7); }
+        .result-box.sell { border-color: #fbbf24; }
+        .result-label { display: block; color: #93c5fd; font-size: 0.8rem; margin-bottom: 4px; font-weight: 600; }
+        .result-value { font-size: 1.15rem; font-weight: bold; color: #38bdf8; word-break: break-word; }
+        .result-box.sell .result-value { color: #fbbf24; }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-primary);
-            font-family: 'Cairo', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 480px;
-            background-color: var(--card-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-            border-bottom: 1px solid rgba(245, 158, 11, 0.3);
-            padding-bottom: 15px;
-        }
-
-        .header h2 {
-            color: var(--border-color);
-            margin: 0;
-            font-size: 20px;
-        }
-
-        .rates-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .rate-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.03);
-            padding: 12px 15px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .currency-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .flag {
-            font-size: 24px;
-        }
-
-        .currency-names {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .currency-code {
-            font-weight: bold;
-            font-size: 16px;
-        }
-
-        .currency-name {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        .prices {
-            display: flex;
-            gap: 15px;
-            text-align: left;
-        }
-
-        .price-box {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-        }
-
-        .price-label {
-            font-size: 11px;
-            color: var(--text-secondary);
-        }
-
-        .price-value {
-            font-size: 14px;
-            font-weight: bold;
-            color: var(--accent-color);
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 12px;
-            color: var(--text-secondary);
-            border-top: 1px solid rgba(245, 158, 11, 0.3);
-            padding-top: 15px;
-        }
+        .update-info { text-align: center; font-size: 0.73rem; color: #94a3b8; margin-bottom: 4px; }
+        .source-note { text-align: center; font-size: 0.68rem; color: #38bdf8; opacity: 0.9; margin-bottom: 10px; }
+        
+        .refresh-btn { width: 100%; background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%); color: #050b14; border: none; padding: 11px; border-radius: 10px; font-size: 0.95rem; font-weight: bold; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.5), 0 0 10px rgba(56,189,248,0.3); transition: 0.2s; }
+        .refresh-btn:hover { background: linear-gradient(135deg, #7dd3fc 0%, #0284c7 100%); }
+        
+        .footer-divider { border: 0; height: 1px; background: rgba(251,191,36,0.3); margin: 12px 0 8px 0; }
+        .footer-branding { text-align: center; font-size: 0.78rem; }
+        .footer-group-name { color: #fbbf24; font-weight: bold; margin-bottom: 2px; word-break: break-word; }
+        .footer-dev { color: #38bdf8; font-size: 0.72rem; font-weight: 500; }
     </style>
 </head>
 <body>
+<div class="converter-card">
+    <div class="header-branding">
+        <div class="group-title">جروب عملاء البنوك المصرية 🛡️</div>
+    </div>
 
-    <div class="container">
-        <div class="header">
-            <h2>🇧🇭 جروب عملاء البنوك المصرية</h2>
-            <p style="margin: 5px 0 0 0; font-size: 14px; color: var(--accent-color);">سعر صرف الجنيه المصري</p>
+    <h2>حاسبة تحويل العملات المتقدمة</h2>
+    
+    <div class="input-group">
+        <label>المبلغ</label>
+        <input type="number" id="amount" value="1">
+    </div>
+    
+    <div class="input-group">
+        <label>من عملة</label>
+        <select id="from"></select>
+    </div>
+    
+    <div class="input-group">
+        <label>إلى عملة</label>
+        <select id="to"></select>
+    </div>
+    
+    <div class="results-container">
+        <div class="result-box">
+            <span class="result-label">سعر الشراء 📉</span>
+            <div id="buyResult" class="result-value">--</div>
         </div>
-
-        <div class="rates-list" id="ratesContainer">
-            <!-- سيتم تعبئة البيانات تلقائياً -->
-        </div>
-
-        <div class="footer">
-            جروب عملاء البنوك المصرية <br>
-            <span style="font-size: 10px;">Developed by Tarek Metwally</span>
+        <div class="result-box sell">
+            <span class="result-label">سعر البيع 📈</span>
+            <div id="sellResult" class="result-value">--</div>
         </div>
     </div>
 
-    <script>
-        // بيانات أسعار العملات (الدولار في المقدمة)
-        const exchangeRates = [
-            { code: "USD", name: "دولار أمريكي", flag: "🇺🇸", buy: "50.23", sell: "50.33" },
-            { code: "EUR", name: "يورو", flag: "🇪🇺", buy: "54.90", sell: "55.10" },
-            { code: "SAR", name: "ريال سعودي", flag: "🇸🇦", buy: "13.34", sell: "13.40" },
-            { code: "GBP", name: "جنيه إسترليني", flag: "🇬🇧", buy: "64.73", sell: "64.91" },
-            { code: "AED", name: "درهم إماراتي", flag: "🇦🇪", buy: "13.66", sell: "13.70" },
-            { code: "CHF", name: "فرنك سويسري", flag: "🇨🇭", buy: "58.66", sell: "58.88" },
-            { code: "BHD", name: "دينار بحريني", flag: "🇧🇭", buy: "131.30", sell: "133.00" },
-            { code: "KWD", name: "دينار كويتي", flag: "🇰🇼", buy: "163.20", sell: "164.50" },
-            { code: "QAR", name: "ريال قطري", flag: "🇶🇦", buy: "13.75", sell: "13.82" },
-            { code: "CNY", name: "يوان صيني", flag: "🇨🇳", buy: "7.04", sell: "7.10" }
-        ];
+    <div class="update-info" id="updateTime">الأسعار محدثة محلياً</div>
+    <div class="source-note" id="sourceNote">أسعار مرجعية رسمية لأسواق البنوك المصرية</div>
+    <button class="refresh-btn" id="refreshBtn" onclick="convert()">إعادة الحساب 🔄</button>
 
-        document.addEventListener("DOMContentLoaded", () => {
-            const container = document.getElementById("ratesContainer");
-            container.innerHTML = "";
-            
-            exchangeRates.forEach(item => {
-                const rateElement = document.createElement("div");
-                rateElement.className = "rate-item";
-                rateElement.innerHTML = `
-                    <div class="currency-info">
-                        <span class="flag">${item.flag}</span>
-                        <div class="currency-names">
-                            <span class="currency-code">${item.code}</span>
-                            <span class="currency-name">${item.name}</span>
-                        </div>
-                    </div>
-                    <div class="prices">
-                        <div class="price-box">
-                            <span class="price-label">شراء</span>
-                            <span class="price-value">${item.buy}</span>
-                        </div>
-                        <div class="price-box">
-                            <span class="price-label">بيع</span>
-                            <span class="price-value">${item.sell}</span>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(rateElement);
-            });
-        });
-    </script>
+    <hr class="footer-divider">
+    <div class="footer-branding">
+        <div class="footer-group-name">جروب عملاء البنوك المصرية 🛡️</div>
+        <div class="footer-dev">Developed by Tarek Metwally</div>
+    </div>
+</div>
+
+<!-- استدعاء ملف الأسعار اليومي المنفصل -->
+<script src="rates.js"></script>
+<script>
+const currencies = [
+    { code: "EGP", name: "الجنيه المصري", flag: "🇪🇬" },
+    { code: "USD", name: "الدولار الأمريكي", flag: "🇺🇸" },
+    { code: "EUR", name: "اليورو الأوروبي", flag: "🇪🇺" },
+    { code: "GBP", name: "الجنيه الاسترليني", flag: "🇬🇧" },
+    { code: "SAR", name: "الريال السعودي", flag: "🇸🇦" },
+    { code: "AED", name: "الدولار الاماراتي", flag: "🇦🇪" },
+    { code: "KWD", name: "الدينار الكويتي", flag: "🇰🇼" },
+    { code: "QAR", name: "الريال القطري", flag: "🇶🇦" },
+    { code: "BHD", name: "الدينار البحريني", flag: "🇧🇭" },
+    { code: "OMR", name: "الريال العماني", flag: "🇴🇲" },
+    { code: "JOD", name: "الدينار الأردني", flag: "🇯🇴" },
+    { code: "CAD", name: "الدولار الكندي", flag: "🇨🇦" },
+    { code: "AUD", name: "الدولار الأسترالي", flag: "🇦🇺" },
+    { code: "CHF", name: "الفرنك السويسري", flag: "🇨🇭" },
+    { code: "JPY", name: "الين الياباني", flag: "🇯🇵" },
+    { code: "CNY", name: "اليوان الصيني", flag: "🇨🇳" }
+];
+
+const fromSel = document.getElementById('from');
+const toSel = document.getElementById('to');
+const updateTimeEl = document.getElementById('updateTime');
+
+currencies.forEach(c => {
+  fromSel.innerHTML += `<option value="${c.code}">${c.flag} ${c.name} (${c.code})</option>`;
+  toSel.innerHTML += `<option value="${c.code}">${c.flag} ${c.name} (${c.code})</option>`;
+});
+fromSel.value = "USD";
+toSel.value = "EGP";
+
+function convert() {
+  const amount = parseFloat(document.getElementById('amount').value) || 0;
+  const from = fromSel.value;
+  const to = toSel.value;
+  
+  if (typeof exchangeRates === 'undefined') {
+      alert("تعذر تحميل ملف الأسعار rates.js");
+      return;
+  }
+
+  const amountInEGP = amount * (exchangeRates[from] || 1);
+  const baseResult = amountInEGP / (exchangeRates[to] || 1);
+  
+  const buyValue = baseResult * 0.9985; 
+  const sellValue = baseResult * 1.0015;
+
+  const targetCurrencyObj = currencies.find(c => c.code === to);
+  const targetName = targetCurrencyObj ? targetCurrencyObj.name : to;
+  
+  document.getElementById('buyResult').innerText = `${buyValue.toFixed(2)} ${targetName}`;
+  document.getElementById('sellResult').innerText = `${sellValue.toFixed(2)} ${targetName}`;
+  
+  const now = new Date();
+  updateTimeEl.textContent = `آخر تحديث: ${now.toLocaleDateString('ar-EG')} - ${now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}`;
+}
+
+document.getElementById('amount').addEventListener('input', convert);
+fromSel.addEventListener('change', convert);
+toSel.addEventListener('change', convert);
+
+document.addEventListener("DOMContentLoaded", () => {
+    convert();
+});
+</script>
 </body>
 </html>
